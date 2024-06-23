@@ -17,13 +17,19 @@ sealed class Passenger : Person, IMyCloneable<Passenger>, IEquatable<Passenger>
     public override string ToString()
     {
         return $"{base.ToString()},[Услуги включенные в стоимость перелета: {string.Join(',', ListOfServices)}]";
-    }
+    }  
 
     public new Passenger CloneObj()
     {
-        return new Passenger(Id, FirstName, LastName, IsBusinessClass);
-    }
+        var passenger = new Passenger(Id, FirstName, LastName, IsBusinessClass);
+        if (ListOfServices != null)
+        {
+            passenger.ListOfServices = ListOfServices;
+        }
 
+        return passenger;
+    }
+    
     public override object Clone()
     {
         var passenger = base.Clone() as Passenger;
@@ -33,25 +39,26 @@ sealed class Passenger : Person, IMyCloneable<Passenger>, IEquatable<Passenger>
         passenger.LastName = LastName;
         passenger.IsBusinessClass = IsBusinessClass;
 
+        if (ListOfServices != null)
+        {
+            passenger.ListOfServices = ListOfServices;
+        }
+
         return passenger;
     }
 
     public bool Equals(Passenger obj)
     {
-        return obj != null &&
-               Id == obj.Id &&
-               FirstName == obj.FirstName &&
-               LastName == obj.LastName &&
-               IsBusinessClass == obj.IsBusinessClass;
-    }
-
-    public override bool Equals(object obj)
-    {
-        return Equals(obj as Passenger);
+        return obj is Passenger passenger &&
+               Id == passenger.Id &&
+               FirstName == passenger.FirstName &&
+               LastName == passenger.LastName &&
+               IsBusinessClass == passenger.IsBusinessClass &&
+               ListOfServices.SequenceEqual(passenger.ListOfServices);
     }
 
     public override int GetHashCode()
     {
-       return Id.GetHashCode() ^ FirstName.GetHashCode() ^ LastName.GetHashCode() ^ IsBusinessClass.GetHashCode();
+        return HashCode.Combine(GetHashCode(), ListOfServices.GetHashCode());
     }
 }

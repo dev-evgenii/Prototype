@@ -92,7 +92,7 @@ public static class Tests
 
         Console.WriteLine(passenger.ToString());
 
-        var passengerCloned = passenger.Clone() as Passenger;
+        var passengerCloned = passenger.Clone() as Passenger;       
 
         if (passenger.Equals(passengerCloned))
         {
